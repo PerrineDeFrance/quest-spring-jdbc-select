@@ -1,8 +1,15 @@
 package com.wildcodeschool.wildandwizard.repository;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.wildcodeschool.wildandwizard.entity.School;
 
-import java.util.List;
 
 public class SchoolRepository {
 
@@ -12,19 +19,102 @@ public class SchoolRepository {
 
     public List<School> findAll() {
 
-        // TODO : find all schools
-        return null;
+        
+    try {
+Connection connection = DriverManager.getConnection(
+                            DB_URL, DB_USER, DB_PASSWORD
+                    );
+                    PreparedStatement statement = connection.prepareStatement(
+                            "SELECT * FROM school;"
+                    );
+                    ResultSet resultSet = statement.executeQuery();
+        
+                    List<School> schools = new ArrayList<>();
+        
+                    while (resultSet.next()) {
+                        Long id = resultSet.getLong("id");
+                        String name = resultSet.getString("name");
+                        int capacity = resultSet.getInt("capacity");
+                        String country = resultSet.getString("country");
+                        
+                        schools.add(new School(id,name,capacity,country));
+                    };
+                    return schools;
+                } catch (
+                        SQLException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        
+        
+
+    public School findById() {
+
+        try {
+            Connection connection = DriverManager.getConnection(
+                                        DB_URL, DB_USER, DB_PASSWORD
+                                );
+                                PreparedStatement statement = connection.prepareStatement(
+                                        "SELECT id FROM school WHERE id=?;"
+                                );
+                                statement.setLong(1,id);
+                                ResultSet resultSet = statement.executeQuery();
+                    
+                                List<School> schools = new ArrayList<>();
+                    
+                                if (resultSet.next()) {
+                                    Long id=resultSet.getLong("id");
+                                    String name = resultSet.getString("name");
+                                    int capacity = resultSet.getInt("capacity");
+                                    String country = resultSet.getString("country");
+                        
+                                    return new School(id, name, capacity, country);
+                                   
+                                };
+                                
+                            } catch (
+                                    SQLException e) {
+                                e.printStackTrace();
+                            }{
+                            return null;
+                        }
+                
     }
+    
 
-    public School findById(Long id) {
+    public List<School> findByCountry() {
 
-        // TODO : find a school by id
-        return null;
-    }
+        try {
+            Connection connection = DriverManager.getConnection(
+                                        DB_URL, DB_USER, DB_PASSWORD
+                                );
+                                PreparedStatement statement = connection.prepareStatement(
+                                        "SELECT country FROM school;"
+                                );
+                                ResultSet resultSet = statement.executeQuery();
+                    
+                                List<School> schools = new ArrayList<>();
+                    
+                                while (resultSet.next()) {
+                                    Long id = resultSet.getLong("id");
+                                    String name = resultSet.getString("name");
+                                    int capacity = resultSet.getInt("capacity");
+                                   String country=resultSet.getString("country");
+                                    
+                                    schools.add(new School(id,name,capacity,country));
+                                };
+                                return schools;
+                            } catch (
+                                    SQLException e) {
+                                e.printStackTrace();
+                            }
+                            return null;
+                        
+                        }
 
-    public List<School> findByCountry(String country) {
 
-        // TODO : search schools by country
-        return null;
-    }
+
 }
+    
+
